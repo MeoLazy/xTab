@@ -38,7 +38,7 @@
         }
 
         .tab-item.active {
-            color: red; /* Màu đỏ khi tab được chọn */
+            color: red;
         }
 
         .tab-item img {
@@ -55,19 +55,88 @@
             border: none;
             transition: opacity 1s ease-in-out;
         }
+
+        /* Popup thông báo */
+        body.modal-active::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9;
+        }
+
+        #alertBox {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            display: none;
+            width: 300px;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        #alertBox p {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .alert-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .alert-buttons button {
+            border: none;
+            padding: 10px 16px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.2s;
+            background-color: #FFC0CB;
+            color: white;
+        }
+
+        .alert-buttons button:hover {
+            background-color: #ff9aad;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -55%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
     </style>
 </head>
 <body>
 
+    <!-- Iframe hiển thị nội dung -->
     <iframe id="iframe-content" class="iframe-container" src="https://meolazy.github.io/Main"></iframe>
 
+    <!-- Thanh điều hướng -->
     <div class="tab-bar">
         <div class="tab-item active" onclick="openTab('https://meolazy.github.io/Main', this)" data-tab="thietbi">
             <img src="https://i.imgur.com/YcNNVKr.png" alt="Thiết Bị">
             <span>Thiết Bị</span>
         </div>
  
-        <div class="tab-item" onclick="openTab('https://meolazy.github.io/Pro', this)" data-tab="game">
+        <div class="tab-item" onclick="openTab('https://meolazy.github.io/Pro/', this)" data-tab="game">
             <img src="https://i.imgur.com/rvmhLgP.png" alt="Game">
             <span>Thiết Bị Pro</span>
         </div>
@@ -75,9 +144,18 @@
             <img src="https://i.imgur.com/mdFmmVr.png" alt="Khám Phá">
             <span>Khám Phá</span>
         </div>
-        <div class="tab-item" onclick="openTab('https://meolazy.github.io/Home', this)" data-tab="home">
+        <div class="tab-item" onclick="openTab('https://meolazy.github.io/Home/', this)" data-tab="home">
             <img src="https://i.imgur.com/gPPZf93.png" alt="Home">
             <span>Home</span>
+        </div>
+    </div>
+
+    <!-- Popup thông báo -->
+    <div id="alertBox">
+        <p>Theo Dõi Cập Nhật UgPhone</p>
+        <div class="alert-buttons">
+            <button class="ok-btn" onclick="closeAlert()">Không</button>
+            <button class="discord-btn" onclick="openDiscord()">Discord</button>
         </div>
     </div>
 
@@ -92,8 +170,6 @@
 
             document.querySelectorAll('.tab-item').forEach(tab => {
                 tab.classList.remove('active');
-
-                // Đổi lại màu chữ thành xám
                 tab.querySelector("span").style.color = "gray";
 
                 if (tab.dataset.tab === "thietbi") {
@@ -111,8 +187,6 @@
             });
 
             element.classList.add('active');
-
-            // Đổi màu chữ của tab đang được chọn thành đỏ
             element.querySelector("span").style.color = "red";
 
             if (element.dataset.tab === "thietbi") {
@@ -128,6 +202,43 @@
                 element.querySelector("img").src = "https://i.imgur.com/WhQ50sV.png";
             }
         }
+
+        const ALERT_DELAY = 10 * 60 * 60 * 1000; // 10 giờ
+
+        function showAlert() {
+            document.getElementById('alertBox').style.display = 'block';
+            document.body.classList.add('modal-active');
+        }
+
+        function closeAlert() {
+            setNextAlertTime(ALERT_DELAY);
+            hideAlertBox();
+        }
+
+        function openDiscord() {
+            setNextAlertTime(ALERT_DELAY);
+            window.open('https://discord.gg/83HpRAPkRX', '_blank');
+            hideAlertBox();
+        }
+
+        function setNextAlertTime(delay) {
+            const futureTime = Date.now() + delay;
+            localStorage.setItem('nextAlertTime', futureTime);
+        }
+
+        function hideAlertBox() {
+            document.getElementById('alertBox').style.display = 'none';
+            document.body.classList.remove('modal-active');
+        }
+
+        function checkAndShowAlert() {
+            const nextAlertTime = localStorage.getItem('nextAlertTime');
+            if (!nextAlertTime || Date.now() > parseInt(nextAlertTime)) {
+                showAlert();
+            }
+        }
+
+        window.onload = checkAndShowAlert;
     </script>
 
 </body>
