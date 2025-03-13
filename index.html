@@ -140,6 +140,11 @@
             <img src="https://i.imgur.com/rvmhLgP.png" alt="Game">
             <span>Thiết Bị Pro</span>
         </div>
+
+        <div class="tab-item" onclick="openTab('https://meolazy.github.io/Premium/', this)" data-tab="game">
+            <img src="https://i.imgur.com/rvmhLgP.png" alt="Pre">
+            <span>Thiết Bị Pre</span>
+        </div>
         <div class="tab-item" onclick="openTab('https://meolazy.github.io/Lazy', this)" data-tab="quanly">
             <img src="https://i.imgur.com/mdFmmVr.png" alt="Khám Phá">
             <span>Khám Phá</span>
@@ -177,6 +182,9 @@
                 }
                 if (tab.dataset.tab === "quanly") {
                     tab.querySelector("img").src = "https://i.imgur.com/mdFmmVr.png";
+                }
+                if (tab.dataset.tab === "pre") {
+                    tab.querySelector("img").src = "https://i.imgur.com/rvmhLgP.png";
                 }
                 if (tab.dataset.tab === "game") {
                     tab.querySelector("img").src = "https://i.imgur.com/rvmhLgP.png";
